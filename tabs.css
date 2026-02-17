@@ -1,0 +1,34 @@
+/* Tab Views */
+.tab-view {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    padding-top: 100px;
+    /* Offset for fixed header */
+    min-height: calc(100vh - 80px);
+    /* Ensure full height */
+}
+
+/* Active Tab */
+.tab-view.active {
+    display: block;
+    animation: fadeInTab 0.5s forwards;
+}
+
+@keyframes fadeInTab {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Home section needs special treatment for Hero background relative to viewport */
+#home.tab-view {
+    padding-top: 0;
+    /* Hero calculates its own padding/height */
+}

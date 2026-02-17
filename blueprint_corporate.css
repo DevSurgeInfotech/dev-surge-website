@@ -1,0 +1,57 @@
+/* Corporate Highlight Section */
+.corporate-highlight {
+    margin-top: 4rem;
+    background: linear-gradient(135deg, rgba(0, 180, 216, 0.1) 0%, rgba(2, 62, 138, 0.2) 100%);
+    border: 1px solid var(--accent-teal);
+    border-radius: 16px;
+    padding: 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.corporate-highlight::before {
+    content: '\f1ad';
+    /* FontAwesome Building Icon */
+    font-family: 'Font Awesome 6 Free';
+    /* Updated for FA 6 */
+    font-weight: 900;
+    position: absolute;
+    right: -20px;
+    bottom: -30px;
+    font-size: 10rem;
+    opacity: 0.1;
+    color: white;
+    z-index: 0;
+}
+
+.corporate-highlight h3 {
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 1rem;
+    font-family: var(--font-heading);
+}
+
+.corporate-highlight p {
+    max-width: 700px;
+    margin: 0 auto 2rem;
+    font-size: 1.1rem;
+    color: var(--text-light);
+}
+
+.corporate-badges {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.corp-badge {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem 1.5rem;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    color: var(--accent-teal);
+    font-size: 0.9rem;
+    font-weight: 500;
+}

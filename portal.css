@@ -1,0 +1,266 @@
+/* Portal Styles */
+#portal.tab-view {
+    padding-top: 100px;
+    background: var(--bg-dark);
+    min-height: 100vh;
+}
+
+/* Login Section */
+.login-container {
+    max-width: 400px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    text-align: center;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.login-logo {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 2rem;
+    display: inline-block;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: white;
+}
+
+.login-form button {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.login-form button:hover {
+    background: var(--accent-teal);
+}
+
+.auth-toggle {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.auth-toggle:hover {
+    color: white;
+}
+
+.auth-toggle strong {
+    color: var(--accent-teal);
+    text-decoration: underline;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Dashboard Section (Hidden initially) */
+.dashboard-container {
+    display: none;
+    /* Toggled via JS */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.db-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.student-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: white;
+}
+
+.student-info h3 {
+    font-size: 1.1rem;
+    color: white;
+    margin: 0;
+}
+
+.student-info span {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-icon {
+    width: 45px;
+    height: 45px;
+    background: rgba(0, 180, 216, 0.15);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-teal);
+    font-size: 1.2rem;
+}
+
+.stat-content h4 {
+    font-size: 1.5rem;
+    color: white;
+    margin: 0;
+}
+
+.stat-content p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+/* Dashboard Content Grid */
+.db-main-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+/* Ongoing Course */
+.current-course-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid var(--glass-border);
+}
+
+.course-progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.progress-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent-teal);
+    width: 65%;
+    /* Simulated progress */
+    border-radius: 4px;
+}
+
+/* Sidebar Widgets */
+.db-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.widget {
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.widget h3 {
+    font-size: 1.1rem;
+    color: white;
+    margin-bottom: 1rem;
+    border-left: 3px solid var(--accent-blue);
+    padding-left: 0.5rem;
+}
+
+.event-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.event-date {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px 10px;
+    border-radius: 6px;
+    text-align: center;
+    min-width: 50px;
+}
+
+.event-date .day {
+    display: block;
+    font-weight: 700;
+    color: var(--accent-teal);
+}
+
+.event-date .month {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.event-info h4 {
+    font-size: 0.95rem;
+    color: white;
+    margin-bottom: 2px;
+}
+
+.event-info span {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+}
+
+@media (max-width: 900px) {
+    .db-main-grid {
+        grid-template-columns: 1fr;
+    }
+}

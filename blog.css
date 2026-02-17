@@ -1,0 +1,215 @@
+/* Blog CSS */
+#blog.tab-view {
+    padding-top: 100px;
+    padding-bottom: 5rem;
+    min-height: 100vh;
+    background: var(--bg-dark);
+}
+
+/* Blog Hero */
+.blog-hero {
+    text-align: center;
+    padding: 4rem 1rem;
+    background: linear-gradient(rgba(2, 11, 28, 0.9), rgba(2, 11, 28, 0.9)), url('https://images.unsplash.com/photo-1499750310159-5254f4128c6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    margin-bottom: 4rem;
+    border: 1px solid var(--glass-border);
+}
+
+.blog-hero h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff 0%, var(--accent-teal) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.blog-hero p {
+    color: var(--text-gray);
+    font-size: 1.2rem;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Blog Grid */
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2.5rem;
+}
+
+.blog-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+}
+
+.blog-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    border-color: var(--accent-teal);
+}
+
+.blog-img {
+    height: 220px;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.blog-category {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--accent-blue);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.blog-content {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.blog-date {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.blog-card h3 {
+    font-size: 1.4rem;
+    color: white;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+    transition: 0.3s;
+}
+
+.blog-card:hover h3 {
+    color: var(--accent-teal);
+}
+
+.blog-excerpt {
+    color: var(--text-gray);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    flex: 1;
+}
+
+.read-more-btn {
+    color: var(--accent-teal);
+    background: transparent;
+    border: none;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: auto;
+    cursor: pointer;
+    transition: 0.3s;
+    padding: 0;
+}
+
+.read-more-btn:hover {
+    gap: 10px;
+}
+
+/* CMS Admin Logic */
+.cms-panel {
+    background: var(--bg-secondary);
+    border: 1px solid var(--accent-teal);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 4rem;
+    display: none;
+    /* Hidden by default, toggled by JS for Admin */
+}
+
+.cms-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.cms-header h3 {
+    color: var(--accent-teal);
+    font-size: 1.5rem;
+}
+
+.cms-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.cms-form-group.full {
+    grid-column: span 2;
+}
+
+.cms-form input,
+.cms-form select,
+.cms-form textarea {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: white;
+    font-family: var(--font-body);
+}
+
+.cms-form input:focus,
+.cms-form select:focus,
+.cms-form textarea:focus {
+    border-color: var(--accent-teal);
+    outline: none;
+}
+
+.cms-btn {
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.cms-btn:hover {
+    background: var(--accent-teal);
+}
+
+@media (max-width: 768px) {
+    .cms-form {
+        grid-template-columns: 1fr;
+    }
+
+    .cms-form-group.full {
+        grid-column: span 1;
+    }
+}

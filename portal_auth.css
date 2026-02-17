@@ -1,0 +1,54 @@
+/* Google Auth Styles */
+.auth-separator {
+    margin: 1.5rem 0;
+    position: relative;
+    text-align: center;
+}
+
+.auth-separator::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.auth-separator span {
+    position: relative;
+    background: var(--bg-secondary);
+    /* Matches card bg but needs check */
+    background: #0d1b2a;
+    /* Fallback dark */
+    padding: 0 10px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.google-btn {
+    width: 100%;
+    padding: 12px;
+    background: white;
+    color: #444;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: 0.3s;
+    font-family: var(--font-body);
+}
+
+.google-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+.google-btn:hover {
+    background: #f1f1f1;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}

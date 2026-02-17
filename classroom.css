@@ -1,0 +1,201 @@
+.classroom-container {
+    display: none;
+    /* Initially hidden */
+    position: fixed;
+    /* Overlay mode */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 9999;
+    /* Above everything including nav */
+    background: var(--bg-dark);
+    overflow-y: auto;
+    /* Allow scrolling within the classroom */
+    padding-top: 100px;
+    /* Clear fixed nav */
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 2rem;
+    animation: fadeIn 0.4s ease-out;
+    /* Restored Animation */
+}
+
+.classroom-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.back-to-dashboard {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--text-light);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-to-dashboard:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.classroom-grid {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr;
+    gap: 2rem;
+    min-height: 600px;
+}
+
+/* Video Player Area */
+.video-player-wrapper {
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 56.25%;
+    /* 16:9 Aspect Ratio */
+    height: 0;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    min-height: 200px;
+    /* Fallback min-height */
+}
+
+.video-player-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.lesson-info {
+    margin-top: 2rem;
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.lesson-info h2 {
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.lesson-info p {
+    color: var(--text-gray);
+    line-height: 1.6;
+}
+
+/* Syllabus/Playlist Sidebar */
+.playlist-sidebar {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 800px;
+}
+
+.playlist-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.playlist-header h3 {
+    margin: 0;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.playlist-progress {
+    font-size: 0.85rem;
+    color: var(--accent-teal);
+    margin-top: 5px;
+    display: block;
+}
+
+.module-list {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.module-item {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.module-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.module-item.active {
+    background: rgba(0, 180, 216, 0.1);
+    border-left: 3px solid var(--accent-teal);
+}
+
+.status-icon {
+    margin-top: 3px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.module-item.completed .status-icon {
+    color: var(--accent-teal);
+}
+
+.module-content h4 {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    margin: 0 0 5px 0;
+    font-weight: 500;
+}
+
+.module-item.active .module-content h4 {
+    color: white;
+    font-weight: 600;
+}
+
+.module-content span {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+}
+
+@media (max-width: 900px) {
+    .classroom-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

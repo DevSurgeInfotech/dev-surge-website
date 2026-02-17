@@ -1,0 +1,247 @@
+/* AI Course Architect Styles */
+.architect-container {
+    display: none;
+    /* Initially hidden */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    animation: fadeIn 0.4s ease-out;
+    background: var(--bg-dark);
+    min-height: 100vh;
+}
+
+.architect-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.architect-title {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #fff 0%, var(--accent-teal) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.architect-desc {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Input Section */
+.architect-input-area {
+    background: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.input-group-architect {
+    display: flex;
+    gap: 1rem;
+}
+
+.input-group-architect input {
+    flex: 1;
+    padding: 15px 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: white;
+    font-size: 1.1rem;
+    font-family: inherit;
+}
+
+.input-group-architect input:focus {
+    outline: none;
+    border-color: var(--accent-teal);
+    box-shadow: 0 0 15px rgba(0, 180, 216, 0.2);
+}
+
+.generate-btn {
+    padding: 0 2rem;
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 119, 182, 0.4);
+}
+
+.generate-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Loading State */
+.loading-indicator {
+    display: none;
+    text-align: center;
+    padding: 2rem;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid var(--accent-teal);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+.loading-text {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    animation: pulse 1.5s infinite;
+}
+
+/* Results Area */
+.generated-content {
+    display: none;
+    animation: slideUp 0.5s ease-out;
+}
+
+.course-outline {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    overflow: hidden;
+}
+
+.course-meta {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-light);
+}
+
+.course-modules-list {
+    padding: 1.5rem;
+}
+
+.generated-module {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.generated-module:hover {
+    border-color: var(--accent-teal);
+}
+
+.module-header {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.module-title h4 {
+    margin: 0;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.module-duration {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.module-details {
+    padding: 1rem;
+    border-top: 1px solid var(--glass-border);
+    display: none;
+    /* Toggled */
+}
+
+.module-details.open {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+.script-section h5 {
+    color: var(--accent-teal);
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.script-content {
+    color: var(--text-gray);
+    line-height: 1.6;
+    font-size: 0.95rem;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    border-radius: 6px;
+    border-left: 3px solid var(--accent-blue);
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
