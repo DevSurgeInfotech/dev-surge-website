@@ -115,12 +115,12 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
     }
 
-    // Event Delegation for "Read Article"
+    // Event Delegation for Blog Card (Click anywhere on the card)
     if (blogGrid) {
         blogGrid.addEventListener('click', (e) => {
-            const btn = e.target.closest('.read-more-btn');
-            if (btn) {
-                const id = btn.getAttribute('data-id');
+            const card = e.target.closest('.blog-card');
+            if (card) {
+                const id = card.getAttribute('data-id');
                 viewPost(id);
             }
         });
