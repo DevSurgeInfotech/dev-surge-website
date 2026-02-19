@@ -107,23 +107,76 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="blog-date"><i class="far fa-calendar-alt"></i> ${post.date} • By ${post.author}</div>
                     <h3>${post.title}</h3>
                     <p class="blog-excerpt">${post.excerpt}</p>
-                    <button class="read-more-btn" data-id="${post.id}">
-                        Read Article <i class="fas fa-arrow-right"></i>
-                    </button>
+                    <div class="blog-actions">
+                        <button class="read-more-btn" data-id="${post.id}">Read More</button>
+                        <div class="admin-actions" style="display: ${isAdmin() ? 'flex' : 'none'}; gap: 10px;">
+                            <button class="edit-btn" data-id="${post.id}"><i class="fas fa-edit"></i></button>
+                            <button class="delete-btn" data-id="${post.id}"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         `).join('');
     }
 
-    // Event Delegation for Blog Card (Click anywhere on the card)
+    function isAdmin() {
+        return localStorage.getItem('userRole') === 'admin' || (typeof auth !== 'undefined' && auth.currentUser && auth.currentUser.email === 'admin@devsurge.com');
+    }
+
+    // Event Delegation for Blog Grid
     if (blogGrid) {
         blogGrid.addEventListener('click', (e) => {
             const card = e.target.closest('.blog-card');
-            if (card) {
-                const id = card.getAttribute('data-id');
-                viewPost(id);
+            if (!card) return;
+
+            const id = card.getAttribute('data-id');
+
+            // Handle Delete
+            if (e.target.closest('.delete-btn')) {
+                e.stopPropagation();
+                if (confirm('Delete this article?')) {
+                    deletePost(id);
+                }
+                return;
             }
+
+            // Handle Edit
+            if (e.target.closest('.edit-btn')) {
+                e.stopPropagation();
+                editPost(id);
+                return;
+            }
+
+            // Handle View (Anywhere on card)
+            viewPost(id);
         });
+    }
+
+    function deletePost(id) {
+        let posts = loadPosts();
+        posts = posts.filter(p => p.id !== id);
+        localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+        renderBlog(posts);
+    }
+
+    function editPost(id) {
+        const post = loadPosts().find(p => p.id === id);
+        if (!post) return;
+
+        // Fill form with post data
+        document.getElementById('postTitle').value = post.title;
+        document.getElementById('postCategory').value = post.category;
+        document.getElementById('postImage').value = post.image;
+        document.getElementById('postExcerpt').value = post.excerpt;
+        document.getElementById('postContentEditor').value = post.content || '';
+
+        // Change button to update
+        const submitBtn = document.querySelector('.cms-btn');
+        submitBtn.innerText = 'Update Article';
+        submitBtn.setAttribute('data-edit-id', id);
+
+        // Scroll to form
+        document.getElementById('cmsPanel').scrollIntoView({ behavior: 'smooth' });
     }
 
     // View Post Logic
@@ -134,16 +187,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (post) {
             const modal = document.getElementById('blogModal');
             if (modal) {
-                // Populate Modal
                 document.getElementById('modalTitle').innerText = post.title;
                 document.getElementById('modalMeta').innerHTML = `<i class="far fa-calendar-alt"></i> ${post.date} • <span class="highlight">${post.category}</span> • By ${post.author}`;
                 document.getElementById('modalImage').style.backgroundImage = `url('${post.image}')`;
-
-                // Handle missing content (legacy posts)
-                const content = post.content ? post.content : `<p>${post.excerpt}</p><p><em>(Full article content coming soon...)</em></p>`;
-                document.getElementById('modalBody').innerHTML = content;
-
-                // Show Modal
+                document.getElementById('modalBody').innerHTML = post.content || `<p>${post.excerpt}</p>`;
                 modal.style.display = 'flex';
             }
         }
@@ -152,16 +199,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Close Modal Logic
     const blogModal = document.getElementById('blogModal');
     if (blogModal) {
-        // Close button logic needs to be attached here or in HTML (already handled by privacy.js if revised? No, need specific logic)
         const closeBtn = blogModal.querySelector('.close-modal-blog');
         if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                blogModal.style.display = 'none';
-            });
+            closeBtn.addEventListener('click', () => { blogModal.style.display = 'none'; });
         }
-        blogModal.addEventListener('click', (e) => {
-            if (e.target === blogModal) blogModal.style.display = 'none';
-        });
+        blogModal.addEventListener('click', (e) => { if (e.target === blogModal) blogModal.style.display = 'none'; });
     }
 
     // Initial Render
@@ -179,31 +221,41 @@ document.addEventListener('DOMContentLoaded', () => {
             const title = document.getElementById('postTitle').value;
             const category = document.getElementById('postCategory').value;
             const excerpt = document.getElementById('postExcerpt').value;
-            // Use a default image if none provided
+            const content = document.getElementById('postContentEditor').value;
             const imageInput = document.getElementById('postImage').value;
             const image = imageInput ? imageInput : 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
 
-            const newPost = {
-                id: Date.now().toString(),
-                title: title,
-                category: category,
-                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-                image: image,
-                excerpt: excerpt,
-                author: 'Admin'
-            };
+            const submitBtn = document.querySelector('.cms-btn');
+            const editId = submitBtn.getAttribute('data-edit-id');
 
-            // Get current posts
-            const posts = JSON.parse(localStorage.getItem(POSTS_KEY) || JSON.stringify(initialPosts));
-            posts.unshift(newPost);
+            let posts = loadPosts();
+
+            if (editId) {
+                // Update existing
+                posts = posts.map(p => p.id === editId ? {
+                    ...p, title, category, excerpt, content, image
+                } : p);
+                submitBtn.innerText = 'Publish Article';
+                submitBtn.removeAttribute('data-edit-id');
+            } else {
+                // Create new
+                const newPost = {
+                    id: Date.now().toString(),
+                    title,
+                    category,
+                    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                    image,
+                    excerpt,
+                    content,
+                    author: 'Admin'
+                };
+                posts.unshift(newPost);
+            }
+
             localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
-
-            // Re-render
             renderBlog(posts);
-
-            // Reset Form
             cmsForm.reset();
-            alert('Post Published Successfully!');
+            alert('Operation Successful!');
         });
     }
 
