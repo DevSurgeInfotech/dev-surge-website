@@ -11,15 +11,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const studentName = document.getElementById('certStudentName').value;
             const course = document.getElementById('certCourse').value;
+            const issueDateRaw = document.getElementById('certIssueDate').value;
             let certId = document.getElementById('certIdManual').value;
+
+            // Format Date
+            const dateObj = new Date(issueDateRaw);
+            const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
             // Generate ID if not provided
             if (!certId) {
-                certId = 'DS-' + Math.floor(1000 + Math.random() * 9000) + '-' + new Date().getFullYear();
+                // Create a prefix based on course initials
+                const prefix = course.split(' ').map(w => w[0]).join('').toUpperCase();
+                certId = `DS-${prefix}-${dateObj.getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
             }
 
             // Build Verification URL
-            // In development, this is localhost. In production, use the vercel URL.
             const siteUrl = window.location.origin;
             const verifyUrl = `${siteUrl}/verify.html?id=${certId}`;
 
@@ -29,8 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Generate New QR Code
             new QRCode(qrcodeContainer, {
                 text: verifyUrl,
-                width: 128,
-                height: 128,
+                width: 150,
+                height: 150,
                 colorDark: "#000000",
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
@@ -41,19 +47,19 @@ document.addEventListener('DOMContentLoaded', () => {
             resCertUrl.innerText = verifyUrl;
             certResult.style.display = 'block';
 
-            // Store in "Verified" Database (localStorage for prototype)
+            // Store in "Verified" Database
             const VERIFIED_CERTS_KEY = 'devsurge_verified_certs';
             let verifiedCerts = JSON.parse(localStorage.getItem(VERIFIED_CERTS_KEY) || '{}');
-
+            
             verifiedCerts[certId] = {
                 name: studentName,
                 course: course,
-                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                date: formattedDate
             };
-
+            
             localStorage.setItem(VERIFIED_CERTS_KEY, JSON.stringify(verifiedCerts));
 
-            alert('Certificate Created and Verified ID stored locally!');
+            alert('Certificate Created Successfully!');
         });
     }
 
@@ -62,53 +68,339 @@ document.addEventListener('DOMContentLoaded', () => {
         const certId = resCertId.innerText;
         const studentName = document.getElementById('certStudentName').value;
         const course = document.getElementById('certCourse').value;
+        const issueDateRaw = document.getElementById('certIssueDate').value;
         const qrcodeImg = qrcodeContainer.querySelector('img').src;
+        
+        const dateObj = new Date(issueDateRaw);
+        const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
         const printWindow = window.open('', '_blank');
         printWindow.document.write(`
             <html>
             <head>
                 <title>Dev Surge Certificate - ${studentName}</title>
+                <link href="https://fonts.googleapis.com/css2?family=Charm:wght@400;700&family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
                 <style>
-                    body { font-family: 'Arial', sans-serif; text-align: center; padding: 50px; background: #f4f4f4; }
-                    .cert-border { border: 15px solid #0072ff; padding: 50px; background: white; position: relative; max-width: 800px; margin: auto; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
-                    .header { color: #0072ff; font-size: 40px; font-weight: bold; margin-bottom: 10px; }
-                    .sub-header { font-size: 20px; color: #555; margin-bottom: 40px; }
-                    .student-name { font-size: 35px; border-bottom: 2px solid #333; display: inline-block; margin-bottom: 10px; padding: 0 20px; }
-                    .course-text { font-size: 20px; margin: 20px 0; }
-                    .course-name { font-weight: bold; color: #0072ff; font-size: 24px; }
-                    .qr-section { margin-top: 50px; display: flex; justify-content: space-around; align-items: flex-end; }
-                    .footer-text { font-size: 14px; color: #888; margin-top: 50px; }
-                    .verify-tag { font-size: 12px; color: #0072ff; font-weight: bold; margin-top: 5px; }
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body { 
+                        font-family: 'Lato', sans-serif; 
+                        background: #f0f0f0;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        min-height: 100vh;
+                    }
+                    .certificate-container {
+                        width: 1123px; /* A4 Landscape width in pixels at 96dpi */
+                        height: 794px; /* A4 Landscape height */
+                        background: #020b1c; /* Dark Navy Background */
+                        position: relative;
+                        overflow: hidden;
+                        border: 1px solid #333;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        padding: 60px;
+                        color: white;
+                        box-shadow: 0 50px 100px rgba(0,0,0,0.5);
+                    }
+
+                    /* Background Curves */
+                    .curve-top {
+                        position: absolute;
+                        top: -50px;
+                        right: -100px;
+                        width: 600px;
+                        height: 600px;
+                        border: 5px solid rgba(226, 176, 76, 0.4); /* Gold color */
+                        border-radius: 50%;
+                        z-index: 1;
+                    }
+
+                    .curve-bottom {
+                        position: absolute;
+                        bottom: -350px;
+                        right: -50px;
+                        width: 800px;
+                        height: 800px;
+                        border: 3px solid rgba(226, 176, 76, 0.3);
+                        border-radius: 50%;
+                        z-index: 1;
+                    }
+
+                    .logo-section {
+                        z-index: 10;
+                        margin-bottom: 40px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 10px;
+                    }
+
+                    .logo-section img {
+                        width: 80px;
+                    }
+
+                    .logo-text {
+                        font-weight: 700;
+                        font-size: 1.2rem;
+                        letter-spacing: 2px;
+                        color: white;
+                    }
+
+                    .title-section {
+                        z-index: 10;
+                        text-align: center;
+                        margin-bottom: 40px;
+                    }
+
+                    .title-main {
+                        font-family: 'Playfair Display', serif;
+                        font-size: 80px;
+                        font-weight: 700;
+                        letter-spacing: 5px;
+                        line-height: 1;
+                        margin-bottom: 10px;
+                    }
+
+                    .title-sub {
+                        font-size: 32px;
+                        font-weight: 300;
+                        letter-spacing: 8px;
+                        text-transform: uppercase;
+                    }
+
+                    .certifies-text {
+                        font-family: 'Playfair Display', serif;
+                        color: #e2b04c;
+                        font-size: 24px;
+                        margin-bottom: 30px;
+                        z-index: 10;
+                    }
+
+                    .student-name {
+                        font-family: 'Charm', cursive;
+                        font-size: 72px;
+                        color: white;
+                        margin-bottom: 40px;
+                        z-index: 10;
+                    }
+
+                    .completion-text {
+                        font-size: 18px;
+                        font-weight: 300;
+                        margin-bottom: 20px;
+                        z-index: 10;
+                        max-width: 800px;
+                        text-align: center;
+                        line-height: 1.6;
+                    }
+
+                    .course-name {
+                        font-family: 'Playfair Display', serif;
+                        font-size: 36px;
+                        color: #e2b04c;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        margin-bottom: 20px;
+                        z-index: 10;
+                        letter-spacing: 2px;
+                    }
+
+                    .description {
+                        font-size: 16px;
+                        max-width: 650px;
+                        text-align: center;
+                        margin-bottom: 40px;
+                        z-index: 10;
+                        opacity: 0.9;
+                    }
+
+                    .footer-section {
+                        margin-top: auto;
+                        width: 100%;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-end;
+                        z-index: 10;
+                    }
+
+                    .cert-id-section {
+                        font-size: 14px;
+                        font-weight: 300;
+                    }
+
+                    .award-date {
+                        position: absolute;
+                        bottom: 150px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        font-size: 18px;
+                    }
+
+                    .qr-verify-section {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 10px;
+                        margin-bottom: 10px;
+                    }
+
+                    .qr-verify-text {
+                        font-size: 10px;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        color: #e2b04c;
+                        font-weight: 700;
+                    }
+
+                    .signature-section {
+                        text-align: center;
+                    }
+
+                    .signature-image {
+                        width: 150px;
+                        margin-bottom: -10px;
+                        filter: brightness(0) invert(1) sepia(100%) saturate(1000%) hue-rotate(345deg); /* Gold style */
+                    }
+
+                    .signature-line {
+                        width: 250px;
+                        height: 1px;
+                        background: white;
+                        margin-bottom: 10px;
+                    }
+
+                    .signature-name {
+                        font-weight: 700;
+                        font-size: 18px;
+                    }
+
+                    .signature-title {
+                        font-size: 14px;
+                        font-weight: 300;
+                        font-style: italic;
+                    }
+
+                    .seal-section {
+                        position: absolute;
+                        right: 250px;
+                        bottom: 60px;
+                    }
+
+                    .seal-outer {
+                        width: 120px;
+                        height: 120px;
+                        background: #e2b04c;
+                        border-radius: 50%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+                        position: relative;
+                    }
+
+                    .seal-outer::after {
+                        content: '';
+                        position: absolute;
+                        width: 100%;
+                        height: 100%;
+                        border: 5px dotted rgba(0,0,0,0.2);
+                        border-radius: 50%;
+                    }
+
+                    .seal-inner {
+                        width: 100px;
+                        height: 100px;
+                        border: 2px solid rgba(0,0,0,0.1);
+                        border-radius: 50%;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        text-align: center;
+                    }
+
+                    .seal-text {
+                        color: #333;
+                        font-size: 10px;
+                        font-weight: 800;
+                        line-height: 1.2;
+                    }
+
+                    @media print {
+                        body { background: none; }
+                        .certificate-container { box-shadow: none; border: none; }
+                    }
                 </style>
             </head>
             <body>
-                <div class="cert-border">
-                    <div class="header">DEV SURGE INFOTECH</div>
-                    <div class="sub-header">CERTIFICATE OF COMPLETION</div>
-                    <p>This is to certify that</p>
-                    <div class="student-name">${studentName}</div>
-                    <p class="course-text">has successfully completed the immersive track in</p>
-                    <div class="course-name">${course}</div>
-                    <p>attained on ${new Date().toLocaleDateString()}</p>
+                <div class="certificate-container">
+                    <div class="curve-top"></div>
+                    <div class="curve-bottom"></div>
+
+                    <div class="logo-section">
+                        <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M50 5L10 25V75L50 95L90 75V25L50 5Z" stroke="#e2b04c" stroke-width="4"/>
+                            <path d="M50 25L25 37.5V62.5L50 75L75 62.5V37.5L50 25Z" fill="#e2b04c"/>
+                        </svg>
+                        <div class="logo-text">DEV SURGE INFOTECH</div>
+                    </div>
+
+                    <div class="title-section">
+                        <h1 class="title-main">CERTIFICATE</h1>
+                        <p class="title-sub">of completion</p>
+                    </div>
+
+                    <p class="certifies-text">This certifies that</p>
                     
-                    <div class="qr-section">
-                        <div style="text-align: left;">
-                            <p><strong>Verified ID:</strong> ${certId}</p>
-                            <p style="font-size: 12px; max-width: 250px;">Scan the QR code to verify this certificate's authenticity on our official portal.</p>
+                    <h2 class="student-name">${studentName}</h2>
+
+                    <p class="completion-text">Has successfully completed The Advanced Corporate Training Program:</p>
+                    <h3 class="course-name">${course}</h3>
+
+                    <p class="description">
+                        A performance-based intensive training demonstrating proficiency through 
+                        practical application, real-world case studies, and specialized certification exams.
+                    </p>
+
+                    <div class="award-date">Awarded on ${formattedDate}</div>
+
+                    <div class="footer-section">
+                        <div class="cert-id-section">
+                            Certificate ID: ${certId}
                         </div>
-                        <div>
-                            <img src="${qrcodeImg}" width="120">
-                            <div class="verify-tag">VERIFY AUTHENTICITY</div>
+
+                        <div class="signature-section">
+                            <div class="qr-verify-section">
+                                <img src="${qrcodeImg}" width="90">
+                                <span class="qr-verify-text">Verify Authenticity</span>
+                            </div>
+                            <!-- Styled Signature for Martin Cofie -->
+                            <div style="font-family: 'Charm', cursive; font-size: 36px; color: #e2b04c; margin-bottom: -10px;">
+                                Martin Cofie
+                            </div>
+                            <div class="signature-line" style="margin: 0 auto 10px auto;"></div>
+                            <p class="signature-name">Mr Martin Cofie</p>
+                            <p class="signature-title">(Managing Director)</p>
                         </div>
                     </div>
-                    
-                    <div class="footer-text">© 2026 Dev Surge Infotech Solutions. All rights reserved.</div>
+
+                    <div class="seal-section">
+                        <div class="seal-outer">
+                            <div class="seal-inner">
+                                <span class="seal-text">TECHNICAL<br>PROFICIENCY<br>VERIFIED</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </body>
             </html>
         `);
         printWindow.document.close();
-        printWindow.print();
+        // Wait for images/fonts to load
+        setTimeout(() => {
+            printWindow.print();
+        }, 500);
     };
 });
