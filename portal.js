@@ -49,13 +49,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Admin Features Check
             const aiTools = document.getElementById('aiToolsWidget');
             const cmsPanel = document.getElementById('cmsPanel'); // Blog CMS
+            const certPanel = document.getElementById('certPanel'); // Certificate Panel
 
             if (user.email === 'admin@devsurge.com') {
                 if (aiTools) aiTools.style.display = 'block';
                 if (cmsPanel) cmsPanel.style.display = 'block';
+                if (certPanel) certPanel.style.display = 'block';
             } else {
                 if (aiTools) aiTools.style.display = 'none';
                 if (cmsPanel) cmsPanel.style.display = 'none';
+                if (certPanel) certPanel.style.display = 'none';
             }
         } else {
             // User is signed out

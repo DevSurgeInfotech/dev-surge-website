@@ -552,6 +552,50 @@
                     </form>
                 </div>
 
+                <!-- Certificate Management Panel (Hidden by Default) -->
+                <div id="certPanel" class="cms-panel" style="margin-top: 2rem;">
+                    <div class="cms-header">
+                        <h3><i class="fas fa-certificate"></i> Issue Certificate</h3>
+                        <p>Generate verified credentials with QR codes</p>
+                    </div>
+                    <form id="certForm" class="cms-form">
+                        <div class="cms-form-group">
+                            <input type="text" id="certStudentName" placeholder="Student Full Name" required>
+                        </div>
+                        <div class="cms-form-group">
+                            <select id="certCourse">
+                                <option value="Full Stack Web Development">Full Stack Web Development</option>
+                                <option value="Cybersecurity Analyst">Cybersecurity Analyst</option>
+                                <option value="UI/UX Design Masterclass">UI/UX Design Masterclass</option>
+                                <option value="Data Science & AI">Data Science & AI</option>
+                            </select>
+                        </div>
+                        <div class="cms-form-group">
+                            <input type="text" id="certIdManual" placeholder="Certificate ID (e.g. DS-2026-005)">
+                        </div>
+                        <div class="cms-form-group">
+                            <button type="submit" class="cms-btn">Generate Certificate</button>
+                        </div>
+                    </form>
+
+                    <div id="certResult"
+                        style="margin-top: 2rem; display: none; padding: 2rem; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed var(--accent-teal);">
+                        <h4 style="color: var(--accent-teal); margin-bottom: 1rem;">Certificate Generated Successfully!
+                        </h4>
+                        <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;">
+                            <div id="qrcode" style="padding: 10px; background: white; border-radius: 8px;"></div>
+                            <div style="flex: 1; text-align: left;">
+                                <p><strong>ID:</strong> <span id="resCertId"></span></p>
+                                <p><strong>URL:</strong> <span id="resCertUrl"
+                                        style="font-size: 0.8rem; color: var(--text-gray);"></span></p>
+                                <button onclick="printCertificate()" class="btn btn-primary"
+                                    style="margin-top:1rem; padding: 8px 15px; font-size: 0.85rem;">Print Certificate
+                                    Preview</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Blog Grid -->
                 <div id="blogGrid" class="blog-grid">
                     <!-- Posts Injected via JS -->
@@ -1265,6 +1309,8 @@
             <script src="firebase-config.js"></script>
             <script src="portal.js"></script>
             <script src="architect.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+            <script src="certificates.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Verification | Dev Surge Infotech</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #020b1c;
+            --bg-secondary: #05162e;
+            --accent-teal: #00f2ff;
+            --accent-blue: #0072ff;
+            --text-gray: #a0aec0;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .verify-container {
+            max-width: 600px;
+            width: 90%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .verify-container::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0, 242, 255, 0.1) 0%, rgba(0, 242, 255, 0) 70%);
+            z-index: -1;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--accent-teal);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            margin-bottom: 2rem;
+        }
+
+        .status-verified {
+            background: rgba(0, 242, 255, 0.1);
+            color: var(--accent-teal);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+        }
+
+        .status-error {
+            background: rgba(255, 77, 77, 0.1);
+            color: #ff4d4d;
+            border: 1px solid rgba(255, 77, 77, 0.2);
+        }
+
+        .cert-details {
+            text-align: left;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .value {
+            font-weight: 600;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-teal) 100%);
+            color: white;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: inline-block;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 114, 255, 0.3);
+        }
+
+        #error-msg {
+            display: none;
+        }
+
+        #verify-content {
+            display: none;
+        }
+
+        .loader {
+            border: 3px solid var(--glass-border);
+            border-top: 3px solid var(--accent-teal);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="verify-container">
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            DEV<span style="color:var(--accent-teal)">SURGE</span>
+        </div>
+
+        <div id="loading">
+            <div class="loader"></div>
+            <p>Verifying authenticity...</p>
+        </div>
+
+        <div id="verify-content">
+            <div class="status-badge status-verified">
+                <i class="fas fa-check-circle"></i> Authenticity Verified
+            </div>
+
+            <h2 style="margin-bottom: 1.5rem;">Certificate of Achievement</h2>
+
+            <div class="cert-details">
+                <div class="detail-row">
+                    <span class="label">Candidate Name</span>
+                    <span class="value" id="student-name">Loading...</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Course Completed</span>
+                    <span class="value" id="course-name">Loading...</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Issue Date</span>
+                    <span class="value" id="issue-date">Loading...</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Certificate ID</span>
+                    <span class="value" id="cert-id" style="color:var(--accent-teal)">#DS-XXXXX</span>
+                </div>
+            </div>
+
+            <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 2rem;">
+                This certificate is a verified credential issued by Dev Surge Infotech.
+                It confirms the holder has successfully satisfied all requirements of the specified course.
+            </p>
+
+            <a href="index.html" class="btn">Visit Main Website</a>
+        </div>
+
+        <div id="error-msg">
+            <div class="status-badge status-error">
+                <i class="fas fa-times-circle"></i> Invalid Certificate
+            </div>
+            <h2>Verification Failed</h2>
+            <p style="color: var(--text-gray); margin-bottom: 2rem;">
+                The certificate ID provided is not found in our records or has been revoked.
+                Please contact hello@devsurgeinfotech.com for assistance.
+            </p>
+            <a href="index.html" class="btn">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const certId = params.get('id');
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('verify-content');
+            const error = document.getElementById('error-msg');
+
+            // Simulate database check
+            setTimeout(() => {
+                loading.style.display = 'none';
+
+                // Mock Data + Local Database
+                const VERIFIED_CERTS_KEY = 'devsurge_verified_certs';
+                const localCerts = JSON.parse(localStorage.getItem(VERIFIED_CERTS_KEY) || '{}');
+
+                const defaultCerts = {
+                    'DS-2026-001': { name: 'John Doe', course: 'Full Stack Web Development', date: 'Feb 15, 2026' },
+                    'DS-2026-002': { name: 'Alice Smith', course: 'Cybersecurity Analyst', date: 'Jan 28, 2026' },
+                    'DS-2026-003': { name: 'Samuel Mensah', course: 'UI/UX Design Masterclass', date: 'Feb 10, 2026' }
+                };
+
+                const allCerts = { ...defaultCerts, ...localCerts };
+
+                if (certId && allCerts[certId]) {
+                    const data = allCerts[certId];
+                    document.getElementById('student-name').innerText = data.name;
+                    document.getElementById('course-name').innerText = data.course;
+                    document.getElementById('issue-date').innerText = data.date;
+                    document.getElementById('cert-id').innerText = '#' + certId;
+                    content.style.display = 'block';
+                } else {
+                    error.style.display = 'block';
+                }
+            }, 1500);
+        });
+    </script>
+</body>
+
+</html>
