@@ -50,13 +50,13 @@ document.addEventListener('DOMContentLoaded', () => {
             // Store in "Verified" Database
             const VERIFIED_CERTS_KEY = 'devsurge_verified_certs';
             let verifiedCerts = JSON.parse(localStorage.getItem(VERIFIED_CERTS_KEY) || '{}');
-            
+
             verifiedCerts[certId] = {
                 name: studentName,
                 course: course,
                 date: formattedDate
             };
-            
+
             localStorage.setItem(VERIFIED_CERTS_KEY, JSON.stringify(verifiedCerts));
 
             alert('Certificate Created Successfully!');
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const course = document.getElementById('certCourse').value;
         const issueDateRaw = document.getElementById('certIssueDate').value;
         const qrcodeImg = qrcodeContainer.querySelector('img').src;
-        
+
         const dateObj = new Date(issueDateRaw);
         const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <title>Dev Surge Certificate - ${studentName}</title>
                 <link href="https://fonts.googleapis.com/css2?family=Charm:wght@400;700&family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
                 <style>
+                    @page { size: landscape; margin: 0; }
                     * { margin: 0; padding: 0; box-sizing: border-box; }
                     body { 
                         font-family: 'Lato', sans-serif; 
@@ -89,18 +90,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         justify-content: center;
                         align-items: center;
                         min-height: 100vh;
+                        padding: 20px;
                     }
                     .certificate-container {
-                        width: 1123px; /* A4 Landscape width in pixels at 96dpi */
-                        height: 794px; /* A4 Landscape height */
-                        background: #020b1c; /* Dark Navy Background */
+                        width: 297mm; /* A4 Landscape width */
+                        height: 210mm; /* A4 Landscape height */
+                        background: #020b1c; 
                         position: relative;
                         overflow: hidden;
-                        border: 1px solid #333;
                         display: flex;
                         flex-direction: column;
                         align-items: center;
-                        padding: 60px;
+                        padding: 40px 60px;
                         color: white;
                         box-shadow: 0 50px 100px rgba(0,0,0,0.5);
                     }
@@ -108,42 +109,38 @@ document.addEventListener('DOMContentLoaded', () => {
                     /* Background Curves */
                     .curve-top {
                         position: absolute;
-                        top: -50px;
-                        right: -100px;
-                        width: 600px;
-                        height: 600px;
-                        border: 5px solid rgba(226, 176, 76, 0.4); /* Gold color */
+                        top: -150px;
+                        right: -150px;
+                        width: 500px;
+                        height: 500px;
+                        border: 4px solid rgba(226, 176, 76, 0.4);
                         border-radius: 50%;
                         z-index: 1;
                     }
 
                     .curve-bottom {
                         position: absolute;
-                        bottom: -350px;
-                        right: -50px;
-                        width: 800px;
-                        height: 800px;
-                        border: 3px solid rgba(226, 176, 76, 0.3);
+                        bottom: -400px;
+                        right: -100px;
+                        width: 900px;
+                        height: 900px;
+                        border: 2px solid rgba(226, 176, 76, 0.2);
                         border-radius: 50%;
                         z-index: 1;
                     }
 
                     .logo-section {
                         z-index: 10;
-                        margin-bottom: 40px;
+                        margin-bottom: 30px;
                         display: flex;
                         flex-direction: column;
                         align-items: center;
-                        gap: 10px;
-                    }
-
-                    .logo-section img {
-                        width: 80px;
+                        gap: 8px;
                     }
 
                     .logo-text {
                         font-weight: 700;
-                        font-size: 1.2rem;
+                        font-size: 1.1rem;
                         letter-spacing: 2px;
                         color: white;
                     }
@@ -151,69 +148,77 @@ document.addEventListener('DOMContentLoaded', () => {
                     .title-section {
                         z-index: 10;
                         text-align: center;
-                        margin-bottom: 40px;
+                        margin-bottom: 25px;
                     }
 
                     .title-main {
                         font-family: 'Playfair Display', serif;
-                        font-size: 80px;
+                        font-size: 85px;
                         font-weight: 700;
-                        letter-spacing: 5px;
+                        letter-spacing: 4px;
                         line-height: 1;
-                        margin-bottom: 10px;
+                        margin-bottom: 5px;
                     }
 
                     .title-sub {
-                        font-size: 32px;
+                        font-size: 28px;
                         font-weight: 300;
-                        letter-spacing: 8px;
+                        letter-spacing: 12px;
                         text-transform: uppercase;
                     }
 
                     .certifies-text {
                         font-family: 'Playfair Display', serif;
                         color: #e2b04c;
-                        font-size: 24px;
-                        margin-bottom: 30px;
+                        font-size: 20px;
+                        margin-bottom: 20px;
                         z-index: 10;
                     }
 
                     .student-name {
                         font-family: 'Charm', cursive;
-                        font-size: 72px;
+                        font-size: 82px;
                         color: white;
-                        margin-bottom: 40px;
+                        margin-bottom: 30px;
                         z-index: 10;
                     }
 
                     .completion-text {
-                        font-size: 18px;
+                        font-size: 16px;
                         font-weight: 300;
-                        margin-bottom: 20px;
+                        margin-bottom: 12px;
                         z-index: 10;
                         max-width: 800px;
                         text-align: center;
-                        line-height: 1.6;
+                        opacity: 0.8;
                     }
 
                     .course-name {
                         font-family: 'Playfair Display', serif;
-                        font-size: 36px;
+                        font-size: 38px;
                         color: #e2b04c;
                         font-weight: 700;
                         text-transform: uppercase;
-                        margin-bottom: 20px;
+                        margin-bottom: 15px;
                         z-index: 10;
-                        letter-spacing: 2px;
+                        letter-spacing: 1px;
                     }
 
                     .description {
-                        font-size: 16px;
-                        max-width: 650px;
+                        font-size: 14px;
+                        max-width: 700px;
                         text-align: center;
-                        margin-bottom: 40px;
+                        margin-bottom: 30px;
                         z-index: 10;
-                        opacity: 0.9;
+                        opacity: 0.7;
+                        line-height: 1.5;
+                    }
+
+                    .award-date {
+                        font-size: 16px;
+                        margin-bottom: 30px;
+                        z-index: 10;
+                        font-weight: 300;
                     }
 
                     .footer-section {
@@ -226,48 +231,45 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     .cert-id-section {
-                        font-size: 14px;
+                        font-size: 12px;
                         font-weight: 300;
+                        opacity: 0.8;
                     }
 
-                    .award-date {
-                        position: absolute;
-                        bottom: 150px;
-                        left: 50%;
-                        transform: translateX(-50%);
-                        font-size: 18px;
+                    .signature-section {
+                        text-align: center;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
                     }
 
                     .qr-verify-section {
                         display: flex;
                         flex-direction: column;
                         align-items: center;
-                        gap: 10px;
-                        margin-bottom: 10px;
+                        gap: 8px;
+                        margin-bottom: 15px;
                     }
 
                     .qr-verify-text {
-                        font-size: 10px;
+                        font-size: 9px;
                         text-transform: uppercase;
                         letter-spacing: 1px;
                         color: #e2b04c;
                         font-weight: 700;
                     }
 
-                    .signature-section {
-                        text-align: center;
-                    }
-
                     .signature-image {
-                        width: 150px;
-                        margin-bottom: -10px;
-                        filter: brightness(0) invert(1) sepia(100%) saturate(1000%) hue-rotate(345deg); /* Gold style */
+                        font-family: 'Charm', cursive; 
+                        font-size: 38px; 
+                        color: #e2b04c; 
+                        margin-bottom: -5px;
                     }
 
                     .signature-line {
-                        width: 250px;
+                        width: 280px;
                         height: 1px;
-                        background: white;
+                        background: rgba(255,255,255,0.5);
                         margin-bottom: 10px;
                     }
 
@@ -277,20 +279,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     .signature-title {
-                        font-size: 14px;
+                        font-size: 13px;
                         font-weight: 300;
                         font-style: italic;
+                        opacity: 0.8;
                     }
 
                     .seal-section {
                         position: absolute;
-                        right: 250px;
-                        bottom: 60px;
+                        right: 200px;
+                        bottom: 50px;
+                        z-index: 5;
                     }
 
                     .seal-outer {
-                        width: 120px;
-                        height: 120px;
+                        width: 110px;
+                        height: 110px;
                         background: #e2b04c;
                         border-radius: 50%;
                         display: flex;
@@ -300,36 +304,26 @@ document.addEventListener('DOMContentLoaded', () => {
                         position: relative;
                     }
 
-                    .seal-outer::after {
-                        content: '';
-                        position: absolute;
-                        width: 100%;
-                        height: 100%;
-                        border: 5px dotted rgba(0,0,0,0.2);
-                        border-radius: 50%;
-                    }
-
                     .seal-inner {
-                        width: 100px;
-                        height: 100px;
-                        border: 2px solid rgba(0,0,0,0.1);
+                        width: 95px;
+                        height: 95px;
+                        border: 1px solid rgba(0,0,0,0.1);
                         border-radius: 50%;
                         display: flex;
-                        flex-direction: column;
                         justify-content: center;
                         align-items: center;
                         text-align: center;
                     }
 
                     .seal-text {
-                        color: #333;
-                        font-size: 10px;
+                        color: #1a1a1a;
+                        font-size: 9px;
                         font-weight: 800;
                         line-height: 1.2;
                     }
 
                     @media print {
-                        body { background: none; }
+                        body { background: none; padding: 0; }
                         .certificate-container { box-shadow: none; border: none; }
                     }
                 </style>
@@ -340,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="curve-bottom"></div>
 
                     <div class="logo-section">
-                        <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="50" height="50" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M50 5L10 25V75L50 95L90 75V25L50 5Z" stroke="#e2b04c" stroke-width="4"/>
                             <path d="M50 25L25 37.5V62.5L50 75L75 62.5V37.5L50 25Z" fill="#e2b04c"/>
                         </svg>
@@ -360,8 +354,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3 class="course-name">${course}</h3>
 
                     <p class="description">
-                        A performance-based intensive training demonstrating proficiency through 
-                        practical application, real-world case studies, and specialized certification exams.
+                        An intensive performance-based training program demonstrating proficiency through 
+                        comprehensive practical application, specialized industry-standard projects, 
+                        and verified domain expertise.
                     </p>
 
                     <div class="award-date">Awarded on ${formattedDate}</div>
@@ -373,14 +368,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         <div class="signature-section">
                             <div class="qr-verify-section">
-                                <img src="${qrcodeImg}" width="90">
+                                <div style="padding: 5px; background: white; border-radius: 4px;">
+                                    <img src="${qrcodeImg}" width="85">
+                                </div>
                                 <span class="qr-verify-text">Verify Authenticity</span>
                             </div>
-                            <!-- Styled Signature for Martin Cofie -->
-                            <div style="font-family: 'Charm', cursive; font-size: 36px; color: #e2b04c; margin-bottom: -10px;">
-                                Martin Cofie
-                            </div>
-                            <div class="signature-line" style="margin: 0 auto 10px auto;"></div>
+                            
+                            <div class="signature-image">Martin Cofie</div>
+                            <div class="signature-line"></div>
                             <p class="signature-name">Mr Martin Cofie</p>
                             <p class="signature-title">(Managing Director)</p>
                         </div>
