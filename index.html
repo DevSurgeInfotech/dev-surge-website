@@ -564,6 +564,8 @@
                         </div>
                         <div class="cms-form-group">
                             <select id="certCourse">
+                                <option value="Microsoft Office Productivity (Corporate training)">Microsoft Office
+                                    Productivity (Corporate training)</option>
                                 <option value="Diploma in Software Development">Diploma in Software Development</option>
                                 <option value="Certificate in Fullstack Development">Certificate in Fullstack
                                     Development</option>
@@ -593,18 +595,33 @@
                     </form>
 
                     <div id="certResult"
-                        style="margin-top: 2rem; display: none; padding: 2rem; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed var(--accent-teal);">
-                        <h4 style="color: var(--accent-teal); margin-bottom: 1rem;">Certificate Generated Successfully!
-                        </h4>
-                        <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;">
-                            <div id="qrcode" style="padding: 10px; background: white; border-radius: 8px;"></div>
-                            <div style="flex: 1; text-align: left;">
-                                <p><strong>ID:</strong> <span id="resCertId"></span></p>
-                                <p><strong>URL:</strong> <span id="resCertUrl"
-                                        style="font-size: 0.8rem; color: var(--text-gray);"></span></p>
-                                <button onclick="printCertificate()" class="btn btn-primary"
-                                    style="margin-top:1rem; padding: 8px 15px; font-size: 0.85rem;">Print Certificate
-                                    Preview</button>
+                        style="margin-top: 2rem; display: none; padding: 2rem; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed var(--accent-teal); text-align: center;">
+                        <h4 style="color: var(--accent-teal); margin-bottom: 2rem;">Verification QR Code Ready!</h4>
+
+                        <div id="qrCaptureArea"
+                            style="display: inline-block; padding: 30px; background: white; border-radius: 8px; margin-bottom: 2rem;">
+                            <div id="qrcode"></div>
+                            <div
+                                style="margin-top: 15px; color: #0072ff; font-weight: 900; font-family: sans-serif; font-size: 14px; letter-spacing: 1px; text-transform: uppercase;">
+                                Verify Authenticity</div>
+                        </div>
+
+                        <div
+                            style="text-align: left; background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 8px;">
+                            <p style="margin-bottom: 0.5rem;"><strong>Assigned ID:</strong> <span id="resCertId"
+                                    style="color: var(--accent-teal);"></span></p>
+                            <p style="margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--text-gray);">
+                                <strong>Verification URL:</strong> <br><span id="resCertUrl"></span></p>
+
+                            <div style="display: flex; gap: 1rem;">
+                                <button onclick="downloadQRCode()" class="cms-btn"
+                                    style="flex: 1; padding: 10px; font-size: 0.85rem;">
+                                    <i class="fas fa-download"></i> Download QR for Canva
+                                </button>
+                                <button onclick="copyVerifyUrl()" class="cms-btn"
+                                    style="flex: 1; padding: 10px; font-size: 0.85rem; background: transparent; border: 1px solid var(--accent-teal);">
+                                    <i class="fas fa-copy"></i> Copy Link
+                                </button>
                             </div>
                         </div>
                     </div>
