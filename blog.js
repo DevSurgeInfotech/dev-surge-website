@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('postTitle').value = post.title;
         document.getElementById('postCategory').value = post.category;
-        document.getElementById('postImage').value = post.image;
+        document.getElementById('postImageBase64').value = post.image || ''; // Hidden field
         document.getElementById('postTags').value = post.tags || '';
         document.getElementById('postExcerpt').value = post.excerpt;
         document.getElementById('postContentEditor').value = post.content || '';
@@ -144,6 +144,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderBlog(loadPosts());
 
+    // --- Image Upload Logic ---
+    const imageInput = document.getElementById('postImageFile');
+    const imageBase64 = document.getElementById('postImageBase64');
+
+    if (imageInput) {
+        imageInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imageBase64.value = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
     const cmsForm = document.getElementById('cmsForm');
     if (cmsForm) {
         cmsForm.addEventListener('submit', (e) => {
@@ -154,8 +171,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const excerpt = document.getElementById('postExcerpt').value;
             const content = document.getElementById('postContentEditor').value;
             const tags = document.getElementById('postTags').value;
-            const imageInput = document.getElementById('postImage').value;
-            const image = imageInput ? imageInput : 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+
+            // Use the uploaded image or a default
+            const image = imageBase64.value ? imageBase64.value : 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
 
             const submitBtn = document.querySelector('.cms-btn');
             const editId = submitBtn.getAttribute('data-edit-id');
@@ -186,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
             renderBlog(posts);
             cmsForm.reset();
+            imageBase64.value = ''; // Reset hidden field
             alert('Operation Successful!');
         });
     }

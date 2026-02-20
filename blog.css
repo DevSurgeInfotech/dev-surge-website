@@ -199,6 +199,11 @@
     color: white;
 }
 
+.cms-form input[type="file"] {
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
 .cms-form input:focus,
 .cms-form select:focus,
 .cms-form textarea:focus {
