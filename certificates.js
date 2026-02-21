@@ -69,24 +69,24 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem(VERIFIED_CERTS_KEY, JSON.stringify(localCerts));
 
             // 2. Save to Cloud Firestore (The REAL Verification Source)
-            if (db) {
-                db.collection('verified_certs').doc(certId).set(certData)
+            if (window.db) {
+                window.db.collection('verified_certs').doc(certId).set(certData)
                     .then(() => {
                         console.log("Certificate synced to cloud.");
                         submitBtn.innerText = originalBtnText;
                         submitBtn.disabled = false;
-                        alert('Certificate Generated & Synced to Cloud Securely!');
+                        alert('Success! Certificate ID: ' + certId + ' has been synced to the global database.');
                     })
                     .catch((error) => {
                         console.error("Cloud Sync Error:", error);
                         submitBtn.innerText = originalBtnText;
                         submitBtn.disabled = false;
-                        alert('Generated locally, but Cloud Sync failed. Check internet connection.');
+                        alert('Critical Error: Could not sync to cloud. Error: ' + error.message);
                     });
             } else {
                 submitBtn.innerText = originalBtnText;
                 submitBtn.disabled = false;
-                alert('Certificate Created Locally (Database Offline)');
+                alert('Database Error: Cloud connection initialization failed.');
             }
 
             // Smooth scroll to result
@@ -112,8 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const ctx = canvas.getContext('2d');
 
         // Define dimensions
-        const padding = 40;
-        const textSpace = 60;
+        const padding = 50;
+        const textSpace = 70;
         canvas.width = qrImg.width + (padding * 2);
         canvas.height = qrImg.height + (padding * 2) + textSpace;
 
@@ -126,10 +126,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Draw Text "VERIFY AUTHENTICITY"
         ctx.fillStyle = '#0072ff'; // Brand Blue
-        ctx.font = 'bold 20px sans-serif';
+        ctx.font = 'bold 22px sans-serif';
         ctx.textAlign = 'center';
         ctx.letterSpacing = '2px';
-        ctx.fillText('VERIFY AUTHENTICITY', canvas.width / 2, canvas.height - 40);
+        ctx.fillText('VERIFY AUTHENTICITY', canvas.width / 2, canvas.height - 50);
 
         // Trigger Download
         const link = document.createElement('a');

@@ -240,61 +240,72 @@
             const content = document.getElementById('verify-content');
             const error = document.getElementById('error-msg');
 
-            // 1. First check Local Storage fallback (for safety)
-            const VERIFIED_CERTS_KEY = 'devsurge_verified_certs';
-            const localCerts = JSON.parse(localStorage.getItem(VERIFIED_CERTS_KEY) || '{}');
-            const defaultCerts = {
-                'DS-2026-001': { name: 'John Doe', course: 'Full Stack Web Development', date: 'Feb 15, 2026' },
-                'DS-2026-002': { name: 'Alice Smith', course: 'Cybersecurity Analyst', date: 'Jan 28, 2026' },
-                'DS-2026-003': { name: 'Samuel Mensah', course: 'UI/UX Design Masterclass', date: 'Feb 10, 2026' }
-            };
+            // First check if ID exists
+            if (!certId) {
+                loading.style.display = 'none';
+                error.style.display = 'block';
+                return;
+            }
+
+            // Diagnostic: Show the ID we are looking for even in error
+            document.getElementById('cert-id').innerText = '#' + certId;
+            const errorCertId = document.getElementById('error-msg').querySelector('h2');
+            if (errorCertId) errorCertId.innerText = `Verification Failed (${certId})`;
 
             const displayData = (data) => {
                 loading.style.display = 'none';
-                document.getElementById('student-name').innerText = data.name;
-                document.getElementById('course-name').innerText = data.course;
-                document.getElementById('issue-date').innerText = data.date;
-                document.getElementById('cert-id').innerText = '#' + certId;
+                document.getElementById('student-name').innerText = data.name || 'N/A';
+                document.getElementById('course-name').innerText = data.course || 'N/A';
+                document.getElementById('issue-date').innerText = data.date || 'N/A';
+                document.getElementById('cert-id').innerText = '#' + (data.id || certId);
                 content.style.display = 'block';
             };
 
-            const showError = () => {
+            const showError = (msg) => {
+                console.warn("Verification Error:", msg);
                 loading.style.display = 'none';
                 error.style.display = 'block';
             };
 
-            if (!certId) {
-                showError();
-                return;
-            }
-
-            // 2. Query Firestore (The Main Shared Database)
-            if (db) {
-                db.collection('verified_certs').doc(certId).get().then((doc) => {
-                    if (doc.exists) {
-                        displayData(doc.data());
-                    } else {
-                        // 3. Fallback to Local/Mock
-                        const allLocal = { ...defaultCerts, ...localCerts };
-                        if (allLocal[certId]) {
-                            displayData(allLocal[certId]);
+            // Database Fetch logic
+            const checkCerts = () => {
+                // 1. Try Firestore First
+                if (window.db) {
+                    window.db.collection('verified_certs').doc(certId).get().then((doc) => {
+                        if (doc.exists) {
+                            displayData(doc.data());
                         } else {
-                            showError();
+                            // 2. Fallback to Local/Mock
+                            checkFallbacks();
                         }
-                    }
-                }).catch((err) => {
-                    console.error("Firestore Error:", err);
-                    // Fallback on error
-                    const allLocal = { ...defaultCerts, ...localCerts };
-                    if (allLocal[certId]) displayData(allLocal[certId]);
-                    else showError();
-                });
-            } else {
-                // No Firestore, use local fallback
+                    }).catch((err) => {
+                        console.error("Firestore Fetch error:", err);
+                        checkFallbacks();
+                    });
+                } else {
+                    checkFallbacks();
+                }
+            };
+
+            const checkFallbacks = () => {
+                const VERIFIED_CERTS_KEY = 'devsurge_verified_certs';
+                const localCerts = JSON.parse(localStorage.getItem(VERIFIED_CERTS_KEY) || '{}');
+                const defaultCerts = {
+                    'DS-2026-001': { name: 'John Doe', course: 'Full Stack Web Development', date: 'Feb 15, 2026' },
+                    'DS-2026-002': { name: 'Alice Smith', course: 'Cybersecurity Analyst', date: 'Jan 28, 2026' },
+                    'DS-2026-003': { name: 'Samuel Mensah', course: 'UI/UX Design Masterclass', date: 'Feb 10, 2026' }
+                };
                 const allLocal = { ...defaultCerts, ...localCerts };
-                if (allLocal[certId]) displayData(allLocal[certId]);
-                else showError();
-            }
+
+                if (allLocal[certId]) {
+                    displayData(allLocal[certId]);
+                } else {
+                    showError("ID Not Found in Cloud or Local Storage");
+                }
+            };
+
+            // Short delay to ensure window.db is ready
+            setTimeout(checkCerts, 500);
         });
     </script>
 </body>
