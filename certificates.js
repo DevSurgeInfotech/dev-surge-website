@@ -9,10 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
         certForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const studentName = document.getElementById('certStudentName').value;
+            const studentName = document.getElementById('certStudentName').value.trim();
             const course = document.getElementById('certCourse').value;
             const issueDateRaw = document.getElementById('certIssueDate').value;
-            let certId = document.getElementById('certIdManual').value;
+            let certId = document.getElementById('certIdManual').value.trim();
 
             // Format Date
             const dateObj = new Date(issueDateRaw);

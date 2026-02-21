@@ -248,31 +248,43 @@
                 return;
             }
 
+            // Cleanup ID (remove whitespace)
+            const cleanId = certId.trim();
+
             // Diagnostic: Show the ID we are looking for even in error
-            document.getElementById('cert-id').innerText = '#' + certId;
-            const errorCertId = document.getElementById('error-msg').querySelector('h2');
-            if (errorCertId) errorCertId.innerText = `Verification Failed (${certId})`;
+            document.getElementById('cert-id').innerText = '#' + cleanId;
+            const errorTitle = document.getElementById('error-msg').querySelector('h2');
+            if (errorTitle) errorTitle.innerText = `Verification Failed (${cleanId})`;
 
             const displayData = (data) => {
                 loading.style.display = 'none';
                 document.getElementById('student-name').innerText = data.name || 'N/A';
                 document.getElementById('course-name').innerText = data.course || 'N/A';
                 document.getElementById('issue-date').innerText = data.date || 'N/A';
-                document.getElementById('cert-id').innerText = '#' + (data.id || certId);
+                document.getElementById('cert-id').innerText = '#' + (data.id || cleanId);
                 content.style.display = 'block';
             };
 
-            const showError = (msg) => {
+            const showError = (msg, isPermissionError = false) => {
                 console.warn("Verification Error:", msg);
                 loading.style.display = 'none';
                 error.style.display = 'block';
+
+                const p = error.querySelector('p');
+                if (isPermissionError) {
+                    p.innerHTML = `<span style="color:#ffcc00; font-weight:bold;">[Database Protected]</span><br>The verification server is blocking public access. Please contact Dev Surge Admin to update Firestore Security Rules to "Public Read".`;
+                } else if (msg) {
+                    p.innerHTML = msg;
+                }
             };
 
             // Database Fetch logic
             const checkCerts = () => {
-                // 1. Try Firestore First
-                if (window.db) {
-                    window.db.collection('verified_certs').doc(certId).get().then((doc) => {
+                // Determine which database to use
+                const dbInstance = window.db;
+
+                if (dbInstance) {
+                    dbInstance.collection('verified_certs').doc(cleanId).get().then((doc) => {
                         if (doc.exists) {
                             displayData(doc.data());
                         } else {
@@ -281,9 +293,14 @@
                         }
                     }).catch((err) => {
                         console.error("Firestore Fetch error:", err);
-                        checkFallbacks();
+                        if (err.code === 'permission-denied') {
+                            showError("Permission Denied", true);
+                        } else {
+                            checkFallbacks();
+                        }
                     });
                 } else {
+                    // If no DB yet, wait a bit more or fallback
                     checkFallbacks();
                 }
             };
@@ -298,15 +315,15 @@
                 };
                 const allLocal = { ...defaultCerts, ...localCerts };
 
-                if (allLocal[certId]) {
-                    displayData(allLocal[certId]);
+                if (allLocal[cleanId]) {
+                    displayData(allLocal[cleanId]);
                 } else {
-                    showError("ID Not Found in Cloud or Local Storage");
+                    showError(`The certificate ID <b>${cleanId}</b> was not found in our global records. If this was just issued, please wait 30 seconds and refresh.`);
                 }
             };
 
-            // Short delay to ensure window.db is ready
-            setTimeout(checkCerts, 500);
+            // Start verification
+            setTimeout(checkCerts, 1000);
         });
     </script>
 </body>
