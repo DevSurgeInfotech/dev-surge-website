@@ -48,17 +48,46 @@ document.addEventListener('DOMContentLoaded', () => {
             resCertUrl.innerText = verifyUrl;
             certResult.style.display = 'block';
 
-            // Store in "Verified" Database
-            const VERIFIED_CERTS_KEY = 'devsurge_verified_certs';
-            let verifiedCerts = JSON.parse(localStorage.getItem(VERIFIED_CERTS_KEY) || '{}');
-
-            verifiedCerts[certId] = {
+            // Store in "Verified" Database (Firebase Firestore)
+            const certData = {
                 name: studentName,
                 course: course,
-                date: formattedDate
+                date: formattedDate,
+                id: certId,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
 
-            localStorage.setItem(VERIFIED_CERTS_KEY, JSON.stringify(verifiedCerts));
+            const submitBtn = certForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerText;
+            submitBtn.innerText = 'Generating & Saving...';
+            submitBtn.disabled = true;
+
+            // 1. Always save to LocalStorage as a local history/fallback
+            const VERIFIED_CERTS_KEY = 'devsurge_verified_certs';
+            let localCerts = JSON.parse(localStorage.getItem(VERIFIED_CERTS_KEY) || '{}');
+            localCerts[certId] = certData;
+            localStorage.setItem(VERIFIED_CERTS_KEY, JSON.stringify(localCerts));
+
+            // 2. Save to Cloud Firestore (The REAL Verification Source)
+            if (db) {
+                db.collection('verified_certs').doc(certId).set(certData)
+                    .then(() => {
+                        console.log("Certificate synced to cloud.");
+                        submitBtn.innerText = originalBtnText;
+                        submitBtn.disabled = false;
+                        alert('Certificate Generated & Synced to Cloud Securely!');
+                    })
+                    .catch((error) => {
+                        console.error("Cloud Sync Error:", error);
+                        submitBtn.innerText = originalBtnText;
+                        submitBtn.disabled = false;
+                        alert('Generated locally, but Cloud Sync failed. Check internet connection.');
+                    });
+            } else {
+                submitBtn.innerText = originalBtnText;
+                submitBtn.disabled = false;
+                alert('Certificate Created Locally (Database Offline)');
+            }
 
             // Smooth scroll to result
             certResult.scrollIntoView({ behavior: 'smooth' });
