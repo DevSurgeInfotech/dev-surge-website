@@ -1,0 +1,264 @@
+/* Products Section Styling */
+.products-hero {
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.product-showcase {
+    display: flex;
+    align-items: center;
+    gap: 5rem;
+    margin-bottom: 8rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 3rem;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.product-showcase.reverse {
+    flex-direction: row-reverse;
+}
+
+.product-visual {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.product-badge {
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    background: var(--accent-teal);
+    color: var(--bg-dark);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    z-index: 5;
+    box-shadow: 0 10px 20px rgba(0, 242, 254, 0.3);
+}
+
+.product-badge.accent {
+    background: #ff007a;
+    box-shadow: 0 10px 20px rgba(255, 0, 122, 0.3);
+}
+
+.product-mockup {
+    width: 100%;
+    max-width: 450px;
+    height: 300px;
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+}
+
+.mockup-header {
+    background: #f1f1f1;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mockup-header.dark {
+    background: #1a1a1a;
+    color: white;
+}
+
+.mockup-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: 0 auto;
+}
+
+.mockup-header .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ddd;
+}
+
+.mockup-url {
+    background: #ffffff;
+    border-radius: 5px;
+    padding: 4px 15px;
+    font-size: 0.7rem;
+    color: #888;
+    flex: 1;
+    text-align: center;
+}
+
+.mockup-body {
+    flex: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.verify-badge-large {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #00c853;
+    font-weight: 800;
+    font-size: 1.2rem;
+    border: 2px solid #00c853;
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+.qr-mock {
+    font-size: 4rem;
+    color: #333;
+}
+
+.mock-text-lines {
+    width: 100%;
+}
+
+.mock-text-lines .line {
+    height: 8px;
+    background: #eee;
+    margin-bottom: 8px;
+    border-radius: 5px;
+}
+
+.mock-text-lines .line.short {
+    width: 60%;
+}
+
+/* Dashboard Mockup */
+.product-mockup.dashboard {
+    background: #0f172a;
+    padding: 20px;
+}
+
+.mockup-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.m-stat {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.m-stat .val {
+    color: #ff007a;
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+.m-stat .lbl {
+    font-size: 0.7rem;
+    color: #94a3b8;
+}
+
+.mock-chart {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+    padding: 20px 0;
+}
+
+.mock-chart .bar {
+    flex: 1;
+    background: linear-gradient(to top, #ff007a, #7c3aed);
+    border-radius: 5px 5px 0 0;
+}
+
+.product-info {
+    flex: 1;
+}
+
+.product-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(45deg, #fff, var(--accent-teal));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.product-tagline {
+    color: var(--accent-teal);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.product-description {
+    color: var(--text-gray);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+
+.product-features {
+    list-style: none;
+    margin-bottom: 2.5rem;
+}
+
+.product-features li {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--text-light);
+}
+
+.product-features li i {
+    color: var(--accent-teal);
+}
+
+.product-pricing {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.product-pricing .price {
+    font-size: 1.1rem;
+    color: var(--text-gray);
+}
+
+.product-pricing .price span {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+@media (max-width: 992px) {
+
+    .product-showcase,
+    .product-showcase.reverse {
+        flex-direction: column;
+        gap: 3rem;
+        text-align: center;
+    }
+
+    .product-pricing {
+        justify-content: center;
+    }
+
+    .product-features li {
+        justify-content: center;
+    }
+}
