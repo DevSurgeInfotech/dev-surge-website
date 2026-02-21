@@ -278,34 +278,41 @@
                 }
             };
 
+            let retryCount = 0;
+            const maxRetries = 5;
+
             // Database Fetch logic
             const checkCerts = () => {
-                // Determine which database to use
                 const dbInstance = window.db;
 
                 if (dbInstance) {
+                    console.log("Cloud Connection Active. Fetching...");
                     dbInstance.collection('verified_certs').doc(cleanId).get().then((doc) => {
                         if (doc.exists) {
                             displayData(doc.data());
                         } else {
-                            // 2. Fallback to Local/Mock
-                            checkFallbacks();
+                            checkFallbacks("Not Found in Cloud");
                         }
                     }).catch((err) => {
                         console.error("Firestore Fetch error:", err);
                         if (err.code === 'permission-denied') {
                             showError("Permission Denied", true);
                         } else {
-                            checkFallbacks();
+                            checkFallbacks("Cloud Fetch Error: " + err.message);
                         }
                     });
                 } else {
-                    // If no DB yet, wait a bit more or fallback
-                    checkFallbacks();
+                    if (retryCount < maxRetries) {
+                        retryCount++;
+                        console.log(`Waiting for Cloud connection... Attempt ${retryCount}`);
+                        setTimeout(checkCerts, 1000);
+                    } else {
+                        checkFallbacks("Cloud Connection Timeout (Firebase scripts not initialized)");
+                    }
                 }
             };
 
-            const checkFallbacks = () => {
+            const checkFallbacks = (reason) => {
                 const VERIFIED_CERTS_KEY = 'devsurge_verified_certs';
                 const localCerts = JSON.parse(localStorage.getItem(VERIFIED_CERTS_KEY) || '{}');
                 const defaultCerts = {
@@ -318,12 +325,12 @@
                 if (allLocal[cleanId]) {
                     displayData(allLocal[cleanId]);
                 } else {
-                    showError(`The certificate ID <b>${cleanId}</b> was not found in our global records. If this was just issued, please wait 30 seconds and refresh.`);
+                    showError(`The certificate ID <b>${cleanId}</b> was not found in our global records.<br><br><small style="color:#666; font-size:0.75rem;">Diagnostic: ${reason}</small>`);
                 }
             };
 
-            // Start verification
-            setTimeout(checkCerts, 1000);
+            // Start verification process
+            checkCerts();
         });
     </script>
 </body>
