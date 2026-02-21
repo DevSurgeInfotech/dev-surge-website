@@ -14,8 +14,16 @@ let db;
 
 try {
     const app = firebase.initializeApp(firebaseConfig);
-    window.auth = firebase.auth();
-    window.db = firebase.firestore();
+
+    // Safety checks for different pages loading different SDKs
+    if (typeof firebase.auth === 'function') {
+        window.auth = firebase.auth();
+    }
+
+    if (typeof firebase.firestore === 'function') {
+        window.db = firebase.firestore();
+    }
+
     console.log("Firebase initialized successfully");
 } catch (error) {
     console.error("Firebase initialization failed:", error);

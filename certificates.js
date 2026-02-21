@@ -137,4 +137,27 @@ document.addEventListener('DOMContentLoaded', () => {
         link.href = canvas.toDataURL('image/png');
         link.click();
     };
+
+    // Database Connectivity Health Check
+    const checkDbHealth = () => {
+        if (!window.db) {
+            console.error("Database not initialized");
+            return;
+        }
+
+        // Try a test write/read to check rules
+        const healthRef = window.db.collection('_system_health').doc('connectivity');
+        healthRef.set({ last_check: firebase.firestore.FieldValue.serverTimestamp() })
+            .then(() => console.log("Cloud Database: Connected & Writable"))
+            .catch(err => {
+                console.error("Cloud Database PERMISSION ERROR:", err);
+                // Only alert if it's a permission issue, not just offline
+                if (err.code === 'permission-denied') {
+                    alert("CRITICAL: Your cloud database is blocking saving. Please ensure your Firestore Rules allow 'write' access.");
+                }
+            });
+    };
+
+    // Run health check after a delay to allow initialization
+    setTimeout(checkDbHealth, 3000);
 });
