@@ -31,45 +31,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Auth State Observer
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            // User is signed in
-            console.log("User logged in:", user.email);
-            authContainer.style.display = 'none';
-            dashboardView.style.display = 'block';
+    const currentAuth = window.auth || auth; // Fallback for safety
 
-            // Update UI with user info
-            // For now, we use display name or email if name isn't set
-            const displayName = user.displayName || user.email.split('@')[0];
-            userProfileName.innerText = `Welcome back, ${displayName}!`;
-            userAvatar.innerText = displayName.substring(0, 2).toUpperCase();
+    if (currentAuth) {
+        currentAuth.onAuthStateChanged(user => {
+            if (user) {
+                // User is signed in
+                console.log("User logged in:", user.email);
+                authContainer.style.display = 'none';
+                dashboardView.style.display = 'block';
 
-            // Load user data from Firestore (future step)
+                // Update UI with user info
+                const displayName = user.displayName || user.email.split('@')[0];
+                userProfileName.innerText = `Welcome back, ${displayName}!`;
+                userAvatar.innerText = displayName.substring(0, 2).toUpperCase();
 
-            // Admin Features Check
-            const aiTools = document.getElementById('aiToolsWidget');
-            const cmsPanel = document.getElementById('cmsPanel'); // Blog CMS
-            const certPanel = document.getElementById('certPanel'); // Certificate Panel
+                // Admin Features Check
+                const aiTools = document.getElementById('aiToolsWidget');
+                const cmsPanel = document.getElementById('cmsPanel'); // Blog CMS
+                const certPanel = document.getElementById('certPanel'); // Certificate Panel
 
-            if (user.email === 'admin@devsurge.com') {
-                if (aiTools) aiTools.style.display = 'block';
-                if (cmsPanel) cmsPanel.style.display = 'block';
-                if (certPanel) certPanel.style.display = 'block';
+                if (user.email === 'admin@devsurge.com') {
+                    if (aiTools) aiTools.style.display = 'block';
+                    if (cmsPanel) cmsPanel.style.display = 'block';
+                    if (certPanel) certPanel.style.display = 'block';
+                } else {
+                    if (aiTools) aiTools.style.display = 'none';
+                    if (cmsPanel) cmsPanel.style.display = 'none';
+                    if (certPanel) certPanel.style.display = 'none';
+                }
             } else {
-                if (aiTools) aiTools.style.display = 'none';
-                if (cmsPanel) cmsPanel.style.display = 'none';
-                if (certPanel) certPanel.style.display = 'none';
+                // User is signed out
+                console.log("User logged out");
+                dashboardView.style.display = 'none';
+                authContainer.style.display = 'block';
             }
-        } else {
-            // User is signed out
-            console.log("User logged out");
-            dashboardView.style.display = 'none';
-            authContainer.style.display = 'block';
-        }
-    });
+        });
+    }
 
     // Handle Login
-    if (loginForm) {
+    if (loginForm && currentAuth) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
@@ -80,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.innerText = 'Verify...';
             btn.disabled = true;
 
-            auth.signInWithEmailAndPassword(email, password)
+            currentAuth.signInWithEmailAndPassword(email, password)
                 .catch(error => {
                     console.error("Login Failed:", error);
                     if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-login-credentials' || error.message.includes('INVALID_LOGIN_CREDENTIALS')) {
@@ -95,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Handle Signup
-    if (signupForm) {
+    if (signupForm && currentAuth) {
         signupForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const name = document.getElementById('signupName').value;
@@ -107,24 +108,11 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.innerText = 'Creating Account...';
             btn.disabled = true;
 
-            auth.createUserWithEmailAndPassword(email, password)
+            currentAuth.createUserWithEmailAndPassword(email, password)
                 .then(cred => {
-                    // Update profile with name
                     return cred.user.updateProfile({
                         displayName: name
                     });
-                })
-                .then(() => {
-                    // User created and profile updated
-                    // Create user document in Firestore (optional but recommended for custom data)
-                    /*
-                    return db.collection('users').doc(cred.user.uid).set({
-                        fullName: name,
-                        email: email,
-                        enrolledCourses: [],
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                     */
                 })
                 .catch(error => {
                     alert('Signup Failed: ' + error.message);
@@ -135,11 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Handle Logout
-    if (logoutBtn) {
+    if (logoutBtn && currentAuth) {
         logoutBtn.addEventListener('click', () => {
-            auth.signOut().then(() => {
-                // Sign-out successful.
-            }).catch((error) => {
+            currentAuth.signOut().catch((error) => {
                 console.error("Logout Error:", error);
             });
         });
@@ -147,10 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle Google Login
     const googleBtn = document.getElementById('googleLoginBtn');
-    if (googleBtn) {
+    if (googleBtn && currentAuth) {
         googleBtn.addEventListener('click', () => {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider)
+            currentAuth.signInWithPopup(provider)
                 .then((result) => {
                     console.log("Google Login Success");
                 }).catch((error) => {
