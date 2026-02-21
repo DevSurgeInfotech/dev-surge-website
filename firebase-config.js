@@ -22,6 +22,16 @@ try {
 
     if (typeof firebase.firestore === 'function') {
         window.db = firebase.firestore();
+        // Force long polling to solve "Client is offline" errors on mobile networks
+        try {
+            window.db.settings({
+                experimentalForceLongPolling: true,
+                merge: true
+            });
+            console.log("Firestore: Long-Polling Enabled");
+        } catch (e) {
+            console.warn("Firestore settings already applied");
+        }
     }
 
     console.log("Firebase initialized successfully");

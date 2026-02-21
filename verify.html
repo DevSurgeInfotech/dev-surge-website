@@ -297,6 +297,8 @@
                         console.error("Firestore Fetch error:", err);
                         if (err.code === 'permission-denied') {
                             showError("Permission Denied", true);
+                        } else if (err.message.includes('offline')) {
+                            showError(`Your phone reported it is <b>offline</b> or the connection was blocked by your network provider.<br><br><b>Tip:</b> Please check your internet connection or try switching from WiFi to Mobile Data (LTE).`);
                         } else {
                             checkFallbacks("Cloud Fetch Error: " + err.message);
                         }
