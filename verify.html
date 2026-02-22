@@ -279,37 +279,41 @@
             };
 
             let retryCount = 0;
-            const maxRetries = 5;
+            const maxRetries = 3;
 
-            // Database Fetch logic
-            const checkCerts = () => {
-                const dbInstance = window.db;
+            // Database Fetch logic via REST API to bypass SDK Network Blocking
+            const checkCertsREST = async () => {
+                const projectId = 'devsurgeportal-7bfb1';
+                const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/verified_certs/${cleanId}`;
 
-                if (dbInstance) {
-                    console.log("Cloud Connection Active. Fetching...");
-                    dbInstance.collection('verified_certs').doc(cleanId).get().then((doc) => {
-                        if (doc.exists) {
-                            displayData(doc.data());
-                        } else {
-                            checkFallbacks("Not Found in Cloud");
-                        }
-                    }).catch((err) => {
-                        console.error("Firestore Fetch error:", err);
-                        if (err.code === 'permission-denied') {
-                            showError("Permission Denied", true);
-                        } else if (err.message.includes('offline')) {
-                            showError(`Your phone reported it is <b>offline</b> or the connection was blocked by your network provider.<br><br><b>Tip:</b> Please check your internet connection or try switching from WiFi to Mobile Data (LTE).`);
-                        } else {
-                            checkFallbacks("Cloud Fetch Error: " + err.message);
-                        }
-                    });
-                } else {
+                console.log("Fetching globally via REST API...");
+                try {
+                    const response = await fetch(url);
+                    if (response.ok) {
+                        const data = await response.json();
+                        // Map REST structured data back to our format
+                        const mappedData = {
+                            name: data.fields.name ? data.fields.name.stringValue : '',
+                            course: data.fields.course ? data.fields.course.stringValue : '',
+                            date: data.fields.date ? data.fields.date.stringValue : '',
+                            id: data.fields.id ? data.fields.id.stringValue : cleanId
+                        };
+                        displayData(mappedData);
+                    } else if (response.status === 404) {
+                        checkFallbacks("Not Found in Cloud");
+                    } else if (response.status === 403) {
+                        showError("Permission Denied", true);
+                    } else {
+                        checkFallbacks(`Cloud Fetch HTTP Error: ${response.status}`);
+                    }
+                } catch (err) {
+                    console.error("REST API Fetch error:", err);
                     if (retryCount < maxRetries) {
                         retryCount++;
-                        console.log(`Waiting for Cloud connection... Attempt ${retryCount}`);
-                        setTimeout(checkCerts, 1000);
+                        console.log(`Retrying global fetch... Attempt ${retryCount}`);
+                        setTimeout(checkCertsREST, 1000);
                     } else {
-                        checkFallbacks("Cloud Connection Timeout (Firebase scripts not initialized)");
+                        checkFallbacks("Network Request Blocked / Timeout");
                     }
                 }
             };
@@ -332,7 +336,7 @@
             };
 
             // Start verification process
-            checkCerts();
+            checkCertsREST();
         });
     </script>
 </body>
